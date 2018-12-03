@@ -149,50 +149,78 @@ def merge_samples(list_of_array_files, list_of_labels):
     np.save("data/all_labels.npy", label)
 
 
-def fourier_transform(filename):
-    arr = np.load(filename)
+def fourier_transform(filename, no_save=False):
+    if no_save:
+        arr = filename
+    else:
+        arr = np.load(filename)
     print(arr.shape)
+    sr = 22500  # Data points per second
     new_arr = []
+    mfcc_arr = []
     for i in range(arr.shape[0]):
         n = 0
         fft = []
+        mfcc_a = []
         for j in range(100):
             a = arr[i, n:n+2000]
-            np.fft.fft(a, n=None, axis=-1, norm=None)
-            fft.append(a)
+            
+            # Mel-scaled power (energy-squared) spectrogram 
+            S = librosa.feature.melspectrogram(a, sr=sr, n_mels=128)
+            
+            # Convert to log scale (dB); use peak power as reference
+            log_S = librosa.amplitude_to_db(S, ref=np.max)
+
+            # Compute mfcc
+            mfcc = librosa.feature.mfcc(S=log_S, sr=sr, n_mfcc=13)
+            mfcc_a.append(mfcc)
+
+            # Compute Fourier Transform
+            #np.fft.fft(a, n=None, axis=-1, norm=None)
+            #fft.append(a)
             n += 2000
+
+        mfcc_arr.append(np.array(mfcc_a))
         new_arr.append(np.array(fft))
-    new_arr = np.array(new_arr)
-    print(new_arr.shape)
-    np.save(filename.strip(".npy")+"_fft.npy", new_arr)
+        if i % 100 == 0:
+            print(i)
+    mfcc_arr = np.array(mfcc_arr)
+    #new_arr = np.array(new_arr)
+    print(mfcc_arr.shape)
+    #print(new_arr.shape)
+    if no_save:
+        return mfcc_arr
+    else:
+        np.save("mfcc_feats.npy", mfcc_arr)
+    #np.save(filename.strip(".npy")+"_fft.npy", new_arr)
 
 
 if __name__ == "__main__":
     #download_all_songs()  #Download all mp3 files from the server
 
     #Cut all audio samples into two and then save into array
-    # decode_audio_toarray('songs/classical/', 'data/classical_songs.npy')
-    # normalize_data("data/classical_songs.npy")
-    # print(1)
-    # decode_audio_toarray('songs/jazz/', 'data/jazz_songs.npy')
-    # normalize_data("data/jazz_songs.npy")
-    # print(1)
-    # decode_audio_toarray('songs/pop/', 'data/pop_songs.npy')
-    # normalize_data("data/pop_songs.npy")
-    # print(1)
-    # decode_audio_toarray('songs/rap/', 'data/rap_songs.npy')
-    # normalize_data("data/rap_songs.npy")
-    # print(1)
-    # decode_audio_toarray('songs/rock/', 'data/rock_songs.npy')
-    # normalize_data("data/rock_songs.npy")
+    #decode_audio_toarray('songs/classical/', 'data/classical_songs.npy')
+    #normalize_data("data/classical_songs.npy")
+    #print(1)
+    #decode_audio_toarray('songs/jazz/', 'data/jazz_songs.npy')
+    #normalize_data("data/jazz_songs.npy")
+    #print(1)
+    #decode_audio_toarray('songs/pop/', 'data/pop_songs.npy')
+    #normalize_data("data/pop_songs.npy")
+    #print(1)
+    #decode_audio_toarray('songs/rap/', 'data/rap_songs.npy')
+    #normalize_data("data/rap_songs.npy")
+    #print(1)
+    #decode_audio_toarray('songs/rock/', 'data/rock_songs.npy')
+    #normalize_data("data/rock_songs.npy")
 
     # Make sure there are same number of samples for each of rock, pop, and rap songs - put into data folder
-    pick_samples("data/rock_songs_normalized.npy", 1000)
-    pick_samples("data/rap_songs_normalized.npy", 1000)
-    pick_samples("data/pop_songs_normalized.npy", 1000)
-    pick_samples("data/jazz_songs_normalized.npy", 1000)
-    pick_samples("data/classical_songs_normalized.npy", 1000)
+    # pick_samples("data/rock_songs_normalized.npy", 30)
+    # pick_samples("data/rap_songs_normalized.npy", 30)
+    # pick_samples("data/pop_songs_normalized.npy", 30)
+    # pick_samples("data/jazz_songs_normalized.npy", 30)
+    # pick_samples("data/classical_songs_normalized.npy", 30)
 
-    # concat_data_and_gen_labels("data/norm_data")
-    # fourier_transform("final_data/all_songs.npy")
-    # split_data("./final_data/all_songs_fft.npy", "./final_data/all_labels.npy")
+    #concat_data_and_gen_labels("data/norm_data")
+    #fourier_transform("final_data/all_songs.npy")
+    split_data("./final_data/mfcc_feats.npy", "./final_data/all_labels.npy")
