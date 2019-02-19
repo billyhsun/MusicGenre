@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 
 logistics_path = './logistics'
 
+
 def test_find_num_correct(predictions, label):
     '''Takes in an array of predictions and of labels. Returns the number of these predicitons that are correct'''
     predictions = np.argmax((predictions.cpu().detach().numpy()), axis=1)  # Both prediction and label 1xnum_genre vectors
@@ -14,6 +15,7 @@ def test_find_num_correct(predictions, label):
     b = (predictions == label)
     corr_num = int(b.sum())
     return corr_num
+
 
 def test_evaluate(model, batch_size, val_loader):
     total_corr = 0
@@ -24,6 +26,7 @@ def test_evaluate(model, batch_size, val_loader):
         predictions = model.forward(feats)
         total_corr += test_find_num_correct(predictions, labels)
     return float(total_corr)/len(val_loader.dataset)
+
 
 def generate_confusion_matrix(model, batch_size, loader, res_2_gen):
     total_corr = 0
@@ -43,6 +46,7 @@ def generate_confusion_matrix(model, batch_size, loader, res_2_gen):
         for i in range (0, len(labels)):
             conf_mat[res_2_gen[str(labels[i])]][res_2_gen[str(predictions[i])]] += 1
         return conf_mat
+
 
 if __name__ == '__main__':
     features_path = './final_data/testset_all_songs_mfcc.npy'

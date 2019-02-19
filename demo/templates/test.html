@@ -1,0 +1,58 @@
+	{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+
+{% block body %}
+<style>
+	body {
+	    padding-bottom: 0px;
+	}
+	.container1 {
+	    position: relative;
+	    text-align: center;
+	    color: black;
+	}
+</style>
+
+<div class="container1" style="background-color: #eeeeee; padding: 4em 0">
+    <h1 class="display-4">Check out your results!</h1>
+</div>
+<div class="container1" style="background-color: #dddddd; padding: 3em 0">
+    <h2>The sample being played is used for generating results.</h2>
+	<br><br>
+
+    <h2>Results:</h2><br>
+    <p>Classical: 0.06 %</p>
+    <p>Jazz: 3.80 %</p>
+    <p>Rap: 54.60 %</p>
+    <p>Rock: 41.54 %</p>
+	<ul id="list"></ul>
+<script>
+$(function() {
+
+   var people = [];
+
+   $.getJSON('demo/static/logistics/results.json', function(data) {
+       $.each(data.person, function(i, f) {
+          var tblRow = "<tr>" + "<td>" + f.Classical + "</td>" +
+           "<td>" + f.Jazz + "</td>" + "<td>" + f.Rap + "</td>" + "<td>" + f.Rock + "</td>" + "</tr>"
+           $(tblRow).appendTo("#userdata tbody");
+     });
+   });
+
+});
+</script>
+
+{% for item in result2 %}
+<tr>
+	<td>{{ item.startchass }}</td>
+	<td>{{ item.cusname }}</td>
+	<td>{{ item.chassistype1 }}</td>
+	<td>{{ item.axleqty }}</td>
+</tr>
+{% endfor %}
+
+</div>
+
+
+{% endblock body %}

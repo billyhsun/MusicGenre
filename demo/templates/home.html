@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock title %}
+{% block body %}
+
+<style>
+.container1 {
+  position: relative;
+  text-align: center;
+  color: black;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
+
+<div class="container1"> 
+  <img src="/static/genre2.png" alt="img" width="100%"> 
+  <div class="centered">
+    <h1 class="display-4">Welcome to MusicGenre!</h1><br>
+    <h2 class="lead">Find out the best match genres of any song using machine learning</h2><br><br>
+    <h2 class="lead">Choose any of the two options below:</h2>
+  </div>
+</div>
+<div class="container1" style="background-color: #dddddd; padding: 4em 0">
+    <h2 class="display-6">Insert YouTube link</h2><br>
+    <form action="http://localhost:5000/uploader" method="POST" enctype="multipart/form-data">
+        <input type="text" name="text" value="https://www.youtube.com/watch?v=6Un9HLDCTCs" style="width: 500px">
+        <input type="submit" name="text"/>
+    </form>
+</div>
+<div class="container1" style="background-color: #bbbbbb; padding: 4em 0">
+    <h2 class="display-6">Or upload the song (mp3 format) here!</h2><br>
+    <form action="http://localhost:5000/uploader" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <input type="submit" name="file"/>
+    </form>
+</div>
+
+{% endblock body %}
