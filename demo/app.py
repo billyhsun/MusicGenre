@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 
 import os
 import demo
@@ -19,24 +19,26 @@ def home():
 
 @app.route('/uploader', methods=['GET', 'POST'])
 def from_youtube():
+    conf = {}
     if request.method == 'POST':
         mp3_path = request.form['text']
-        demo.run_from_youtube(mp3_path)
-    return redirect('http://localhost:5000/test')
+        conf = demo.run_from_youtube(mp3_path)
+    return render_template('test.html', percentages=conf)
 
 
 @app.route('/uploader', methods=['GET', 'POST'])
 def upload_file():
+    conf = {}
     if request.method == 'POST':
         f = request.files['file']
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
-        demo.run_demo()
-    return redirect('http://localhost:5000/test')
+        conf = demo.run_demo()
+    return render_template('test.html', percentages=conf)
 
 
-@app.route('/test', methods=['GET'])
-def test():
-    return render_template('test.html')
+# @app.route('/test', methods=['GET'])
+# def test():
+#     return render_template('test.html', percentages=request.args.get('conf'))
 
 
 if __name__ == '__main__':

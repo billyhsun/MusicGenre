@@ -71,7 +71,7 @@ def run_demo():
 
     confidence = []
     for i in range(0, len(results[0])):
-        r[genres[i]] = round(float(results[0][i]), 4)
+        r[genres[i]] = str(round(float(results[0][i]) * 100, 2))
         confidence.append(round(float(results[0][i]), 4))
 
     with open('./logistics/results.json', 'w') as fp:
@@ -84,6 +84,8 @@ def run_demo():
     for filename in os.listdir('./demo_songs'):
         os.remove(os.path.join('./demo_songs', filename))
 
+    return r
+
 
 def run_from_youtube(mp3_path):
     os.chdir('static/demo_songs')
@@ -91,8 +93,9 @@ def run_from_youtube(mp3_path):
     download_youtube_song(mp3_path)
     os.chdir('..')
 
-    run_demo()
+    conf = run_demo()
+    return conf
 
 
 if __name__ == '__main__':
-    run_demo()
+    conf = run_demo()
