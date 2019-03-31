@@ -27,30 +27,8 @@
     <p>Rap: {{percentages.Rap}} %</p>
     <p>Rock: {{percentages.Rock}} %</p>
 	<ul id="list"></ul>
-<script>
-$(function() {
 
-   var people = [];
-
-   $.getJSON('demo/static/logistics/results.json', function(data) {
-       $.each(data.person, function(i, f) {
-          var tblRow = "<tr>" + "<td>" + f.Classical + "</td>" +
-           "<td>" + f.Jazz + "</td>" + "<td>" + f.Rap + "</td>" + "<td>" + f.Rock + "</td>" + "</tr>"
-           $(tblRow).appendTo("#userdata tbody");
-     });
-   });
-
-});
-</script>
-
-{% for item in result2 %}
-<tr>
-	<td>{{ item.startchass }}</td>
-	<td>{{ item.cusname }}</td>
-	<td>{{ item.chassistype1 }}</td>
-	<td>{{ item.axleqty }}</td>
-</tr>
-{% endfor %}
+	<a href="/">Try Another Song!</a>
 
 </div>
 

@@ -12,8 +12,10 @@ app.config['UPLOAD_FOLDER'] = input_dir
 # Route for home or index
 @app.route('/')
 def home():
-    shutil.rmtree('./static/demo_songs')
-    os.mkdir('./static/demo_songs')
+    # if os.path.exists('./static/demo_songs'):
+    #     shutil.rmtree('./static/demo_songs')
+    # if ~os.path.exists('./static/demo_songs'):
+    #     os.mkdir('./static/demo_songs')
     return render_template('home.html')
 
 
@@ -26,19 +28,15 @@ def from_youtube():
     return render_template('test.html', percentages=conf)
 
 
-@app.route('/uploader', methods=['GET', 'POST'])
+@app.route('/uploader1', methods=['GET', 'POST'])
 def upload_file():
     conf = {}
     if request.method == 'POST':
         f = request.files['file']
+        print(os.getcwd())
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
         conf = demo.run_demo()
     return render_template('test.html', percentages=conf)
-
-
-# @app.route('/test', methods=['GET'])
-# def test():
-#     return render_template('test.html', percentages=request.args.get('conf'))
 
 
 if __name__ == '__main__':

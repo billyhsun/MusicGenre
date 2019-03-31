@@ -10,7 +10,8 @@ import youtube_dl
 import sounddevice as sp
 from preprocess import fourier_transform
 
-logistics_path = './logistics'
+logistics_path = './static/logistics'
+song_path = './static/demo_songs'
 
 
 def download_youtube_song(url):
@@ -49,13 +50,13 @@ def run_demo():
 
     # while True:
     # print(os.getcwd())
-    for filename in os.listdir('./demo_songs'):
+    for filename in os.listdir(song_path):
         if filename == '.DS_Store':
-            os.remove(os.path.join('./demo_songs', filename))
+            os.remove(os.path.join(song_path, filename))
         else:
-            os.rename(os.path.join('./demo_songs', filename), os.path.join('./demo_songs', "curr_song.mp3"))
+            os.rename(os.path.join(song_path, filename), os.path.join(song_path, "curr_song.mp3"))
 
-    mp3_path = os.path.join("./demo_songs", "curr_song.mp3")
+    mp3_path = os.path.join(song_path, "curr_song.mp3")
     # print(mp3_path)
     song_array = get_cut_sample(mp3_path)
     sp.play(song_array, 22050)
@@ -74,23 +75,26 @@ def run_demo():
         r[genres[i]] = str(round(float(results[0][i]) * 100, 2))
         confidence.append(round(float(results[0][i]), 4))
 
-    with open('./logistics/results.json', 'w') as fp:
+    with open('./static/logistics/results.json', 'w') as fp:
         json.dump(r, fp)
 
     for i in range(0, len(results[0])):
         print(genres[i], ":", confidence[i], " -- ")
     print('\n')
 
-    for filename in os.listdir('./demo_songs'):
-        os.remove(os.path.join('./demo_songs', filename))
+    for filename in os.listdir(song_path):
+        os.remove(os.path.join(song_path, filename))
 
     return r
 
 
 def run_from_youtube(mp3_path):
-    os.chdir('static/demo_songs')
     # print(os.getcwd())
+    # print(os.path.exists(song_path))
+    if ~os.path.exists(song_path):
+        os.chdir(song_path)
     download_youtube_song(mp3_path)
+    os.chdir('..')
     os.chdir('..')
 
     conf = run_demo()
