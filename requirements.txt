@@ -1,0 +1,5 @@
+numpy
+pytorch
+spotipy
+scipy
+librosa
