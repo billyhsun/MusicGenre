@@ -3,3 +3,4 @@ pytorch
 spotipy
 scipy
 librosa
+pydub
