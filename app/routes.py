@@ -1,12 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
-
 import os
-import demo
+import app.utils as ut
 import shutil
-
-input_dir = './static/demo_songs'
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = input_dir
+from app import app
 
 
 # Route for home or index
@@ -24,7 +20,7 @@ def from_youtube():
     conf = {}
     if request.method == 'POST':
         mp3_path = request.form['text']
-        conf = demo.run_from_youtube(mp3_path)
+        conf = ut.run_from_youtube(mp3_path)
     return render_template('test.html', percentages=conf)
 
 
@@ -35,9 +31,5 @@ def upload_file():
         f = request.files['file']
         print(os.getcwd())
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
-        conf = demo.run_demo()
+        conf = ut.run_demo()
     return render_template('test.html', percentages=conf)
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='localhost', port=5000)

@@ -8,7 +8,6 @@ import numpy as np
 
 import youtube_dl
 import sounddevice as sp
-from preprocess import fourier_transform
 
 logistics_path = './static/logistics'
 song_path = './static/demo_songs'
@@ -25,6 +24,52 @@ def download_youtube_song(url):
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
+
+
+def fourier_transform(filename, no_save=False):
+    if no_save:
+        arr = filename
+    else:
+        arr = np.load(filename)
+    print(arr.shape)
+    sr = 22500  # Data points per second
+    new_arr = []
+    mfcc_arr = []
+    for i in range(arr.shape[0]):
+        n = 0
+        fft = []
+        mfcc_a = []
+        for j in range(100):
+            a = arr[i, n:n+2000]
+            
+            # Mel-scaled power (energy-squared) spectrogram 
+            S = librosa.feature.melspectrogram(a, sr=sr, n_mels=128)
+            
+            # Convert to log scale (dB); use peak power as reference
+            log_S = librosa.amplitude_to_db(S, ref=np.max)
+
+            # Compute mfcc
+            mfcc = librosa.feature.mfcc(S=log_S, sr=sr, n_mfcc=13)
+            mfcc_a.append(mfcc)
+
+            # Compute Fourier Transform
+            #np.fft.fft(a, n=None, axis=-1, norm=None)
+            #fft.append(a)
+            n += 2000
+
+        mfcc_arr.append(np.array(mfcc_a))
+        new_arr.append(np.array(fft))
+        if i % 100 == 0:
+            print(i)
+    mfcc_arr = np.array(mfcc_arr)
+    #new_arr = np.array(new_arr)
+    print(mfcc_arr.shape)
+    #print(new_arr.shape)
+    if no_save:
+        return mfcc_arr
+    else:
+        np.save("mfcc_feats.npy", mfcc_arr)
+    #np.save(filename.strip(".npy")+"_fft.npy", new_arr)
 
 
 def get_cut_sample(song_path):
