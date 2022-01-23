@@ -1,5 +1,5 @@
-libportaudio2
-libsndfile1
+libasound2-dev 
+python-dev 
+python-numpy 
+python-setuptools 
 libsndfile-dev
-sndfile
-ffmpeg
