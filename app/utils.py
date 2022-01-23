@@ -8,6 +8,8 @@ import numpy as np
 
 import youtube_dl
 import sounddevice as sp
+from apscheduler.schedulers.background import BackgroundScheduler
+sched = BackgroundScheduler(daemon=True)
 
 logistics_path = './static/logistics'
 song_path = './static/demo_songs'
@@ -144,6 +146,16 @@ def run_from_youtube(mp3_path):
 
     conf = run_demo()
     return conf
+
+
+def abc():
+    return {"status": 200, "Message": "App running"}
+
+
+# Run pipeline daily at 1 pm (13:00)
+# sched.add_job(pipeline, trigger='cron', day='*', hour=13)
+sched.add_job(abc, trigger='cron', day='*', hour=13)
+sched.start()
 
 
 if __name__ == '__main__':
